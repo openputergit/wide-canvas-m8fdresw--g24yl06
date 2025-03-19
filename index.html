@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartHeal - Mental Wellness Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .glass-effect { 
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .music-player {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-teal-500 to-blue-500 min-h-screen">
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="glass-effect fixed w-full z-50 px-6 py-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-white text-2xl font-bold">HeartHeal</a>
+            <div id="nav-links" class="hidden md:flex space-x-6">
+                <a href="#" class="text-white hover:text-blue-200" onclick="showSection('home')">Home</a>
+                <a href="#" class="text-white hover:text-blue-200" onclick="showSection('journal')" id="journalLink">Journal</a>
+                <a href="#" class="text-white hover:text-blue-200" onclick="showSection('music')" id="musicLink">Music & Quotes</a>
+                <a href="#" class="text-white hover:text-blue-200" onclick="showSection('profile')" id="profileLink">Profile</a>
+                <button id="authButton" onclick="showSection('login')" class="bg-white text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-100">Login</button>
+            </div>
+            <button class="md:hidden text-white" onclick="toggleMenu()">
+                <i class="bi bi-list text-2xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="md:hidden hidden fixed top-16 left-0 w-full bg-white z-40 shadow-lg">
+        <div class="p-4 space-y-3">
+            <a href="#" class="block text-blue-500 hover:bg-blue-50 p-2 rounded" onclick="showSection('home')">Home</a>
+            <a href="#" class="block text-blue-500 hover:bg-blue-50 p-2 rounded" onclick="showSection('journal')">Journal</a>
+            <a href="#" class="block text-blue-500 hover:bg-blue-50 p-2 rounded" onclick="showSection('music')">Music & Quotes</a>
+            <a href="#" class="block text-blue-500 hover:bg-blue-50 p-2 rounded" onclick="showSection('profile')">Profile</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto pt-24 px-6">
+        <!-- Home Section -->
+        <section id="home" class="min-h-screen">
+            <div class="text-center text-white py-20">
+                <h1 class="text-5xl font-bold mb-6">Welcome to HeartHeal</h1>
+                <p class="text-xl mb-8">Your personal space for mental wellness and emotional growth</p>
+                <button onclick="showSection('login')" class="bg-white text-blue-500 px-8 py-3 rounded-lg hover:bg-blue-100 transition">
+                    Get Started
+                </button>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8 text-white">
+                <div class="glass-effect p-6 rounded-lg">
+                    <i class="bi bi-journal-text text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Daily Journaling</h3>
+                    <p>Express your thoughts and track your emotional journey</p>
+                </div>
+                <div class="glass-effect p-6 rounded-lg">
+                    <i class="bi bi-music-note-beamed text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Calming Music</h3>
+                    <p>Discover peaceful melodies to soothe your mind</p>
+                </div>
+                <div class="glass-effect p-6 rounded-lg">
+                    <i class="bi bi-quote text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Daily Quotes</h3>
+                    <p>Find inspiration in carefully curated quotes</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Auth Section -->
+        <section id="auth" class="hidden">
+            <div class="max-w-md mx-auto glass-effect p-8 rounded-lg shadow-lg">
+                <div id="login-form">
+                    <h2 class="text-2xl font-bold text-white mb-6">Login</h2>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="mb-4">
+                            <input type="email" id="login-email" placeholder="Email" required
+                                class="w-full p-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/60">
+                        </div>
+                        <div class="mb-6">
+                            <input type="password" id="login-password" placeholder="Password" required
+                                class="w-full p-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/60">
+                        </div>
+                        <button type="submit" class="w-full bg-white text-blue-500 py-2 rounded hover:bg-blue-100">
+                            Login
+                        </button>
+                    </form>
+                    <p class="text-white mt-4 text-center">
+                        <a href="#" onclick="toggleAuthForm('forgot')" class="hover:underline">Forgot Password?</a>
+                    </p>
+                    <p class="text-white mt-2 text-center">
+                        Don't have an account? 
+                        <a href="#" onclick="toggleAuthForm('signup')" class="hover:underline">Sign up</a>
+                    </p>
+                </div>
+
+                <div id="signup-form" class="hidden">
+                    <h2 class="text-2xl font-bold text-white mb-6">Sign Up</h2>
+                    <form onsubmit="handleSignup(event)">
+                        <div class="mb-4">
+                            <input type="text" id="signup-name" placeholder="Full Name" required
+                                class="w-full p-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/60">
+                        </div>
+                        <div class="mb-4">
+                            <input type="email" id="signup-email" placeholder="Email" required
+                                class="w-full p-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/60">
+                        </div>
+                        <div class="mb-6">
+                            <input type="password" id="signup-password" placeholder="Password" required
+                                class="w-full p-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/60">
+                        </div>
+                        <button type="submit" class="w-full bg-white text-blue-500 py-2 rounded hover:bg-blue-100">
+                            Sign Up
+                        </button>
+                    </form>
+                    <p class="text-white mt-4 text-center">
+                        Already have an account? 
+                        <a href="#" onclick="toggleAuthForm('login')" class="hover:underline">Login</a>
+                    </p>
+                </div>
+
+                <div id="forgot-form" class="hidden">
+                    <h2 class="text-2xl font-bold text-white mb-6">Reset Password</h2>
+                    <form onsubmit="handleForgotPassword(event)">
+                        <div class="mb-6">
+                            <input type="email" id="forgot-email" placeholder="Email" required
+                                class="w-full p-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/60">
+                        </div>
+                        <button type="submit" class="w-full bg-white text-blue-500 py-2 rounded hover:bg-blue-100">
+                            Reset Password
+                        </button>
+                    </form>
+                    <p class="text-white mt-4 text-center">
+                        <a href="#" onclick="toggleAuthForm('login')" class="hover:underline">Back to Login</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Journal Section -->
+        <section id="journal" class="hidden min-h-screen">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-white mb-6">My Journal</h2>
+                <div class="glass-effect p-6 rounded-lg mb-6">
+                    <form onsubmit="handleJournalEntry(event)">
+                        <input type="text" id="journal-title" placeholder="Entry Title" required
+                            class="w-full p-3 rounded bg-white/10 border border-white/20 text-white placeholder-white/60 mb-4">
+                        <textarea id="journal-content" rows="6" placeholder="Write your thoughts..." required
+                            class="w-full p-3 rounded bg-white/10 border border-white/20 text-white placeholder-white/60 mb-4"></textarea>
+                        <button type="submit" class="bg-white text-blue-500 px-6 py-2 rounded hover:bg-blue-100">
+                            Save Entry
+                        </button>
+                    </form>
+                </div>
+                <div id="journal-entries" class="space-y-4">
+                    <!-- Journal entries will be dynamically added here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Music & Quotes Section -->
+        <section id="music" class="hidden min-h-screen">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="glass-effect p-6 rounded-lg">
+                    <h2 class="text-2xl font-bold text-white mb-6">Calming Music</h2>
+                    <div class="music-player p-4">
+                        <div id="music-list" class="space-y-4">
+                            <!-- Music tracks will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-effect p-6 rounded-lg">
+                    <h2 class="text-2xl font-bold text-white mb-6">Daily Quotes</h2>
+                    <div id="quote-container" class="text-white text-center p-6">
+                        <p id="quote-text" class="text-xl italic mb-4"></p>
+                        <p id="quote-author" class="text-lg"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile" class="hidden min-h-screen">
+            <div class="max-w-2xl mx-auto glass-effect p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-white mb-6">My Profile</h2>
+                <div class="text-white space-y-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
+                            <i class="bi bi-person text-4xl"></i>
+                        </div>
+                        <div>
+                            <h3 id="profile-name" class="text-xl font-bold"></h3>
+                            <p id="profile-email" class="text-white/80"></p>
+                        </div>
+                    </div>
+                    <div class="border-t border-white/20 pt-6">
+                        <button onclick="handleLogout()" class="bg-white text-blue-500 px-6 py-2 rounded hover:bg-blue-100">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-effect mt-20 py-8">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8 text-white">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">About HeartHeal</h3>
+                    <p>Your safe space for emotional wellbeing and mental health support.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:underline">Home</a></li>
+                        <li><a href="#" class="hover:underline">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:underline">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contact Us</h3>
+                    <p>Email: support@heartheal.com</p>
+                </div>
+            </div>
+            <div class="text-center text-white mt-8">
+                <p>&copy; 2023 HeartHeal. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        let isAuthenticated = false;
+        let currentUser = null;
+        const API_BASE_URL = 'http://localhost:3000/api';
+
+        // Show/hide loading spinner
+        const toggleLoading = (show) => {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        };
+
+        // Navigation and section display
+        const showSection = (section) => {
+            const sections = ['home', 'auth', 'journal', 'music', 'profile'];
+            sections.forEach(s => {
+                document.getElementById(s).classList.add('hidden');
+            });
+            
+            if (section !== 'home' && !isAuthenticated && section !== 'auth') {
+                document.getElementById('auth').classList.remove('hidden');
+                return;
+            }
+            
+            document.getElementById(section).classList.remove('hidden');
+        };
+
+        // Mobile menu toggle
+        const toggleMenu = () => {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        };
+
+        // Auth form toggle
+        const toggleAuthForm = (form) => {
+            ['login-form', 'signup-form', 'forgot-form'].forEach(f => {
+                document.getElementById(f).classList.add('hidden');
+            });
+            document.getElementById(`${form}-form`).classList.remove('hidden');
+        };
+
+        // Authentication handlers
+        const handleLogin = async (event) => {
+            event.preventDefault();
+            toggleLoading(true);
+
+            try {
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    isAuthenticated = true;
+                    currentUser = data.user;
+                    localStorage.setItem('token', data.token);
+                    updateUIForAuthenticatedUser();
+                    showSection('journal');
+                } else {
+                    alert(data.message || 'Login failed');
+                }
+            } catch (error) {
+                alert('An error occurred during login');
+            } finally {
+                toggleLoading(false);
+            }
+        };
+
+        const handleSignup = async (event) => {
+            event.preventDefault();
+            toggleLoading(true);
+
+            try {
+                const name = document.getElementById('signup-name').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Registration successful! Please login.');
+                    toggleAuthForm('login');
+                } else {
+                    alert(data.message || 'Registration failed');
+                }
+            } catch (error) {
+                alert('An error occurred during registration');
+            } finally {
+                toggleLoading(false);
+            }
+        };
+
+        const handleForgotPassword = async (event) => {
+            event.preventDefault();
+            toggleLoading(true);
+
+            try {
+                const email = document.getElementById('forgot-email').value;
+
+                const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Password reset instructions sent to your email');
+                    toggleAuthForm('login');
+                } else {
+                    alert(data.message || 'Password reset request failed');
+                }
+            } catch (error) {
+                alert('An error occurred during password reset request');
+            } finally {
+                toggleLoading(false);
+            }
+        };
+
+        const handleLogout = () => {
+            isAuthenticated = false;
+            currentUser = null;
+            localStorage.removeItem('token');
+            updateUIForUnauthenticatedUser();
+            showSection('home');
+        };
+
+        // Journal handlers
+        const handleJournalEntry = async (event) => {
+            event.preventDefault();
+            toggleLoading(true);
+
+            try {
+                const title = document.getElementById('journal-title').value;
+                const content = document.getElementById('journal-content').value;
+                const token = localStorage.getItem('token');
+
+                const response = await fetch(`${API_BASE_URL}/journal`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ title, content })
+                });
+
+                if (response.ok) {
+                    document.getElementById('journal-title').value = '';
+                    document.getElementById('journal-content').value = '';
+                    loadJournalEntries();
+                    alert('Journal entry saved successfully!');
+                } else {
+                    alert('Failed to save journal entry');
+                }
+            } catch (error) {
+                alert('An error occurred while saving the journal entry');
+            } finally {
+                toggleLoading(false);
+            }
+        };
+
+        const loadJournalEntries = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE_URL}/journal`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const entries = await response.json();
+                    const container = document.getElementById('journal-entries');
+                    container.innerHTML = entries.map(entry => `
+                        <div class="glass-effect p-4 rounded-lg">
+                            <h3 class="text-xl font-bold text-white">${entry.title}</h3>
+                            <p class="text-white/80 mt-2">${entry.content}</p>
+                            <p class="text-white/60 text-sm mt-2">${new Date(entry.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading journal entries:', error);
+            }
+        };
+
+        // Music and quotes handlers
+        const loadMusicTracks = () => {
+            const tracks = [
+                { title: 'Peaceful Meditation', duration: '5:30' },
+                { title: 'Ocean Waves', duration: '4:45' },
+                { title: 'Forest Ambience', duration: '6:15' }
+            ];
+
+            const container = document.getElementById('music-list');
+            container.innerHTML = tracks.map(track => `
+                <div class="flex items-center justify-between text-white p-2 hover:bg-white/10 rounded">
+                    <div class="flex items-center">
+                        <i class="bi bi-play-circle mr-3"></i>
+                        <span>${track.title}</span>
+                    </div>
+                    <span>${track.duration}</span>
+                </div>
+            `).join('');
+        };
+
+        const loadDailyQuote = async () => {
+            try {
+                const response = await fetch('https://api.quotable.io/random');
+                const data = await response.json();
+                document.getElementById('quote-text').textContent = `"${data.content}"`;
+                document.getElementById('quote-author').textContent = `- ${data.author}`;
+            } catch (error) {
+                console.error('Error loading quote:', error);
+            }
+        };
+
+        // UI update functions
+        const updateUIForAuthenticatedUser = () => {
+            document.getElementById('authButton').textContent = 'Logout';
+            document.getElementById('authButton').onclick = handleLogout;
+            document.querySelectorAll('#journalLink, #musicLink, #profileLink').forEach(link => {
+                link.classList.remove('hidden');
+            });
+            if (currentUser) {
+                document.getElementById('profile-name').textContent = currentUser.name;
+                document.getElementById('profile-email').textContent = currentUser.email;
+            }
+        };
+
+        const updateUIForUnauthenticatedUser = () => {
+            document.getElementById('authButton').textContent = 'Login';
+            document.getElementById('authButton').onclick = () => showSection('login');
+            document.querySelectorAll('#journalLink, #musicLink, #profileLink').forEach(link => {
+                link.classList.add('hidden');
+            });
+        };
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                // Verify token and set up authenticated session
+                // This would typically involve a server request to validate the token
+                isAuthenticated = true;
+                updateUIForAuthenticatedUser();
+            } else {
+                updateUIForUnauthenticatedUser();
+            }
+            showSection('home');
+            loadMusicTracks();
+            loadDailyQuote();
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
